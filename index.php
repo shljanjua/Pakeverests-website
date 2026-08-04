@@ -55,6 +55,9 @@ switch ($route) {
     case 'robots.txt':
         require PE_ROOT . '/app/views/robots.php';
         exit;
+    case 'llms.txt':
+        require PE_ROOT . '/app/views/llms.php';
+        exit;
     case 'ads.txt':
         header('Content-Type: text/plain; charset=utf-8');
         echo trim((string) setting('ads_txt', '')) . "\n";

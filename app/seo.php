@@ -66,7 +66,10 @@ function abs_url(string $path): string
  * ------------------------------------------------------------------------ */
 function schema_organization(): array
 {
+    /* sameAs is the strongest authority signal — it ties the website to the
+       verified Google Business Profile and every official social account. */
     $sameAs = array_values(array_filter([
+        setting('google_business_url'),   // Google Business Profile / Maps listing
         setting('social_facebook'),
         setting('social_instagram'),
         setting('social_youtube'),
@@ -77,18 +80,26 @@ function schema_organization(): array
 
     $numbers = array_map(fn($n) => '+' . wa_number($n['number']), whatsapp_numbers());
 
-    return [
+    $org = [
         '@context'    => 'https://schema.org',
-        '@type'       => ['LocalBusiness', 'FoodEstablishment'],
+        '@type'       => ['LocalBusiness', 'FoodEstablishment', 'Store'],
         '@id'         => SITE_URL . '/#organization',
         'name'        => site_name(),
-        'alternateName' => 'Pak-Everests Water',
+        'legalName'   => setting('legal_name', 'Pak-Everests Bottled Drinking Water'),
+        'alternateName' => ['Pak-Everests Water', 'Pak Everests', 'PakEverests'],
         'url'         => SITE_URL . '/',
-        'logo'        => abs_url(setting('logo_path', '/assets/img/logo.webp')),
+        'logo'        => [
+            '@type'  => 'ImageObject',
+            'url'    => abs_url(setting('logo_path', '/assets/img/logo.webp')),
+            'width'  => 400,
+            'height' => 120,
+        ],
         'image'       => abs_url(setting('og_image', '/assets/img/og-default.jpg')),
         'description' => setting('meta_description', 'Punjab Food Authority approved mineral water plant in Gujar Khan, Potohar, Punjab.'),
+        'slogan'      => site_tagline(),
         'email'       => contact_email(),
         'telephone'   => $numbers[0] ?? '+923335592206',
+        'foundingDate'=> setting('company_founded', '2019'),
         'priceRange'  => 'Rs 130 – Rs 42,000',
         'currenciesAccepted' => 'PKR',
         'paymentAccepted'    => 'Cash on Delivery, EasyPaisa, JazzCash, Bank Transfer',
@@ -115,9 +126,45 @@ function schema_organization(): array
             fn($a) => ['@type' => 'City', 'name' => $a['area_name']],
             coverage_areas() ?: [['area_name' => 'Gujar Khan'], ['area_name' => 'Rawalpindi'], ['area_name' => 'Islamabad']]
         ),
-        'sameAs'    => $sameAs,
-        'hasCredential' => 'Punjab Food Authority Licensed',
+        'knowsAbout'  => [
+            'Mineral water', 'Bottled drinking water', '19 litre water bottle refill',
+            'Reverse osmosis water purification', 'Water dispenser supply', 'Custom label water bottles',
+            'Water delivery in Gujar Khan', 'Water delivery in Rawalpindi', 'Water delivery in Islamabad',
+        ],
+        'sameAs'      => $sameAs,
+        'hasCredential' => [
+            '@type' => 'EducationalOccupationalCredential',
+            'credentialCategory' => 'license',
+            'name'  => setting('license_authority', 'Punjab Food Authority') . ' Licence',
+            'identifier' => setting('license_number', ''),
+        ],
+        'award' => setting('license_authority', 'Punjab Food Authority') . ' Approved Bottled Drinking Water Establishment',
     ];
+
+    /* Link the entity to the verified Google Business Profile / Maps listing. */
+    $map = setting('google_business_url') ?: setting('map_directions_url', '');
+    if ($map !== '') {
+        $org['hasMap'] = $map;
+    }
+
+    /* Aggregate rating from genuinely approved reviews — a real trust signal
+       that can surface star ratings in local and organic results. */
+    try {
+        $agg = fetch_one('SELECT AVG(rating) AS avg_rating, COUNT(*) AS total FROM reviews WHERE status = "approved"');
+        if ($agg && (int) $agg['total'] > 0) {
+            $org['aggregateRating'] = [
+                '@type'       => 'AggregateRating',
+                'ratingValue' => number_format((float) $agg['avg_rating'], 1),
+                'reviewCount' => (int) $agg['total'],
+                'bestRating'  => 5,
+                'worstRating' => 1,
+            ];
+        }
+    } catch (Throwable $e) {
+        // Ratings are optional; never break the page.
+    }
+
+    return $org;
 }
 
 function schema_website(): array

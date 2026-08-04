@@ -47,8 +47,10 @@ INSERT INTO `settings` (`setting_key`,`setting_value`,`setting_group`,`updated_a
 ('free_delivery_note','Free delivery on 19L refills across our full coverage area','general',NOW()),
 ('footer_about','Pak-Everests is a Punjab Food Authority approved mineral water plant based in Gujar Khan, serving homes, offices, schools, hospitals, mosques and businesses across the Potohar region with an eight stage purification process and mineral balanced drinking water.','general',NOW()),
 ('company_founded','2019','general',NOW()),
+('legal_name','Pak-Everests Bottled Drinking Water','general',NOW()),
 
 -- Social -------------------------------------------------------------------
+('google_business_url','','social',NOW()),
 ('social_facebook','https://facebook.com/pakeverests','social',NOW()),
 ('social_instagram','https://instagram.com/pakeverests','social',NOW()),
 ('social_youtube','https://youtube.com/@pakeverests','social',NOW()),
