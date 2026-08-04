@@ -192,6 +192,40 @@ $areas          = coverage_areas();
 
 </div><!-- /.pe-page -->
 
+<!-- ================= Mobile navigation drawer =================
+     Kept at the top level of the DOM (outside .pe-page and the sticky header)
+     so it is never trapped inside another stacking context. This is what makes
+     the panel render solid and above the dimmed backdrop. -->
+<div class="mobile-nav" id="mobileNav" aria-hidden="true">
+  <div class="mobile-nav-overlay" data-close></div>
+  <aside class="mobile-nav-panel" role="dialog" aria-modal="true" aria-label="Menu">
+    <div class="mobile-nav-head">
+      <a class="mobile-nav-brand" href="<?= e(url('/')) ?>" data-close>
+        <img src="<?= e(media_url((string) setting('logo_path'), 'logo')) ?>" alt="<?= e(site_name()) ?>" width="180" height="52">
+      </a>
+      <button class="mobile-nav-close" type="button" data-close aria-label="Close menu">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.3 5.7 12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7 2.9 18.3 9.2 12 2.9 5.7 4.3 4.3l6.3 6.3 6.3-6.3z"/></svg>
+      </button>
+    </div>
+
+    <nav class="mobile-nav-list" aria-label="Mobile navigation">
+      <ul class="nav-list">
+        <?php require PE_ROOT . '/app/partials/nav-items.php'; ?>
+      </ul>
+    </nav>
+
+    <div class="mobile-nav-cta">
+      <a class="btn btn-primary btn-block" href="<?= e(url('order')) ?>" data-close>Order Water Now</a>
+      <a class="btn btn-whatsapp btn-block" href="<?= e(wa_link(primary_whatsapp(), 'Hello Pak-Everests, I would like to order water.')) ?>" target="_blank" rel="noopener" data-close>WhatsApp Us</a>
+    </div>
+
+    <div class="mobile-nav-contact">
+      <a href="tel:<?= e(wa_number(primary_whatsapp())) ?>"><?= e(primary_whatsapp()) ?></a>
+      <a href="mailto:<?= e(contact_email()) ?>"><?= e(contact_email()) ?></a>
+    </div>
+  </aside>
+</div>
+
 <script src="<?= e(asset('js/main.js')) ?>" defer></script>
 </body>
 </html>

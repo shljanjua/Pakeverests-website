@@ -20,7 +20,7 @@ if (is_post()) {
             $pairs = [
                 'site_name' => post('site_name'), 'brand_suffix' => post('brand_suffix'),
                 'site_tagline' => post('site_tagline'), 'footer_about' => post('footer_about'),
-                'company_founded' => post('company_founded'),
+                'company_founded' => post('company_founded'), 'legal_name' => post('legal_name'),
                 'license_authority' => post('license_authority'), 'license_number' => post('license_number'),
                 'psqca_number' => post('psqca_number'), 'per_litre_rate' => post('per_litre_rate'),
                 'hours_display' => post('hours_display'), 'hours_open' => post('hours_open'), 'hours_close' => post('hours_close'),
@@ -40,6 +40,7 @@ if (is_post()) {
                 'phone_display' => post('phone_display'), 'address_street' => post('address_street'),
                 'address_city' => post('address_city'), 'address_region' => post('address_region'),
                 'address_postal' => post('address_postal'), 'address_full' => post('address_full'),
+                'google_business_url' => post('google_business_url'),
                 'social_facebook' => post('social_facebook'), 'social_instagram' => post('social_instagram'),
                 'social_youtube' => post('social_youtube'), 'social_tiktok' => post('social_tiktok'),
                 'social_linkedin' => post('social_linkedin'), 'social_twitter' => post('social_twitter'),
@@ -190,6 +191,11 @@ admin_header('Settings', 'Everything that configures the website');
     </div>
   </div>
   <div class="form-group">
+    <label for="legal_name">Registered legal name</label>
+    <input type="text" id="legal_name" name="legal_name" value="<?= e((string) setting('legal_name')) ?>">
+    <p class="form-hint">The exact business name registered with Google Business Profile and the Punjab Food Authority. Used in the LocalBusiness schema as an authority signal.</p>
+  </div>
+  <div class="form-group">
     <label for="footer_about">Short company description (footer)</label>
     <textarea id="footer_about" name="footer_about" style="min-height:100px;"><?= e((string) setting('footer_about')) ?></textarea>
   </div>
@@ -284,6 +290,14 @@ admin_header('Settings', 'Everything that configures the website');
   <div class="form-group">
     <label for="address_full">Full address (shown in the footer and on documents)</label>
     <textarea id="address_full" name="address_full" style="min-height:70px;"><?= e((string) setting('address_full')) ?></textarea>
+  </div>
+
+  <div class="a-card-head" style="margin-top:22px;"><h2>Google Business Profile</h2></div>
+  <p class="form-hint" style="margin-bottom:12px;">Paste the public link to your verified <strong>Pak-Everests</strong> Google Business Profile / Maps listing. This is the single strongest local-SEO authority signal — it ties the website to your verified business in Google's Knowledge Graph, drives the LocalBusiness <code>sameAs</code> and <code>hasMap</code> schema, and is referenced in llms.txt for AI answer engines.</p>
+  <div class="form-group">
+    <label for="google_business_url">Google Business Profile / Maps URL</label>
+    <input type="url" id="google_business_url" name="google_business_url" value="<?= e((string) setting('google_business_url')) ?>" placeholder="https://maps.google.com/... or https://g.page/...">
+    <p class="form-hint">Open Google Maps, find your business, click Share, and copy the link. A short <code>g.page</code>, <code>maps.app.goo.gl</code> or full Maps URL all work.</p>
   </div>
 
   <div class="a-card-head" style="margin-top:22px;"><h2>Social profiles</h2></div>

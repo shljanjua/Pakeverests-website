@@ -30,37 +30,47 @@
      -------------------------------------------------------------------- */
   (function nav() {
     var toggle = $('#navToggle');
-    var menu   = $('#mainNav');
-    if (!toggle || !menu) return;
-
-    var backdrop = document.createElement('div');
-    backdrop.className = 'nav-backdrop';
-    document.body.appendChild(backdrop);
+    var drawer = $('#mobileNav');
+    if (!toggle || !drawer) return;
 
     function setOpen(open) {
-      menu.classList.toggle('is-open', open);
-      backdrop.classList.toggle('is-open', open);
+      drawer.classList.toggle('is-open', open);
+      drawer.setAttribute('aria-hidden', String(!open));
       toggle.setAttribute('aria-expanded', String(open));
       toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
       document.body.style.overflow = open ? 'hidden' : '';
+      if (open) {
+        var firstLink = drawer.querySelector('.mobile-nav-close');
+        if (firstLink) firstLink.focus();
+      } else {
+        toggle.focus();
+      }
     }
 
     toggle.addEventListener('click', function () {
-      setOpen(!menu.classList.contains('is-open'));
-    });
-    backdrop.addEventListener('click', function () { setOpen(false); });
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && menu.classList.contains('is-open')) setOpen(false);
+      setOpen(!drawer.classList.contains('is-open'));
     });
 
-    // Accordion behaviour for dropdowns on small screens.
-    $$('.has-dropdown > a').forEach(function (link) {
+    // Anything marked data-close (overlay, close button, links, CTAs) closes it.
+    drawer.addEventListener('click', function (e) {
+      if (e.target.closest('[data-close]')) setOpen(false);
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && drawer.classList.contains('is-open')) setOpen(false);
+    });
+
+    // Accordion behaviour for the dropdown sections inside the drawer.
+    $$('.mobile-nav-list .has-dropdown > a').forEach(function (link) {
       link.addEventListener('click', function (e) {
-        if (window.innerWidth >= 1100) return;
         var parent = link.parentElement;
+        // First tap expands the section; the parent link still navigates on a
+        // second tap (the section is already open).
         if (!parent.classList.contains('is-open')) {
           e.preventDefault();
-          $$('.has-dropdown.is-open').forEach(function (o) { if (o !== parent) o.classList.remove('is-open'); });
+          $$('.mobile-nav-list .has-dropdown.is-open').forEach(function (o) {
+            if (o !== parent) o.classList.remove('is-open');
+          });
           parent.classList.add('is-open');
         }
       });
