@@ -350,6 +350,11 @@ select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmln
   body.admin-body { background: #fff; }
 }
 
+/* Collapse inline two-column admin layouts (editor + sidebar) on small screens. */
+@media (max-width: 860px) {
+  [style*="grid-template-columns"] { grid-template-columns: 1fr !important; }
+}
+
 /* ---------- Responsive ---------- */
 @media (min-width: 900px) {
   .topbar-user-meta { display: block; }

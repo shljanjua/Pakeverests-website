@@ -144,6 +144,8 @@ fbq('init', <?= ejs($pixel) ?>); fbq('track', 'PageView');
 
 <a class="skip-link" href="#main">Skip to main content</a>
 
+<div class="pe-page">
+
 <?php if ($bar = setting('announcement_bar')): ?>
 <div class="announcement-bar"><div class="container"><?= e($bar) ?></div></div>
 <?php endif; ?>
