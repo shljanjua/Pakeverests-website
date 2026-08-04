@@ -1,0 +1,19 @@
+# Local configuration (contains DB credentials) — never commit
+app/config.local.php
+
+# Uploaded media (managed from the admin panel on the live server)
+uploads/*
+!uploads/.gitkeep
+!uploads/index.html
+
+# Runtime
+app/cache/*
+!app/cache/.gitkeep
+*.log
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
