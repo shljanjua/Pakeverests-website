@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Gallery photo placeholder">
+  <rect width="800" height="600" fill="#eaf5fb"/>
+  <rect x="60" y="70" width="680" height="460" rx="18" fill="#ddf2fc" stroke="#b9e5f8" stroke-width="3"/>
+  <circle cx="250" cy="220" r="52" fill="#85d2f2"/>
+  <path d="M120 470l180-190 140 150 100-90 140 130z" fill="#45b7e6" opacity=".75"/>
+  <text x="400" y="560" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="600" fill="#0f5376">Gallery photo placeholder</text>
+</svg>
