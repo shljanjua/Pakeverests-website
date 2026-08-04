@@ -190,6 +190,8 @@ $areas          = coverage_areas();
 <?= ad_slot('popunder') ?>
 <?= ad_slot('push') ?>
 
+</div><!-- /.pe-page -->
+
 <script src="<?= e(asset('js/main.js')) ?>" defer></script>
 </body>
 </html>

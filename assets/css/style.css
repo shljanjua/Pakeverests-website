@@ -117,7 +117,6 @@ body {
   line-height: 1.7;
   color: var(--text);
   background: var(--bg);
-  overflow-x: hidden;
   transition: background var(--t), color var(--t);
 }
 
@@ -167,6 +166,10 @@ hr { border: 0; border-top: 1px solid var(--border); margin: 2rem 0; }
 .skip-link:focus { transform: translate(-50%, 0); }
 
 .hp-field { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+/* Clips the off-canvas mobile menu so it never widens the page. clip (not
+   hidden) keeps the sticky header and vertical scrolling working. */
+.pe-page { overflow-x: clip; }
 
 .container { width: 100%; max-width: var(--container); margin-inline: auto; padding-inline: var(--gutter); }
 .grid > *, .card, .form-card { min-width: 0; }
@@ -968,6 +971,14 @@ tbody tr:hover { background: var(--surface-2); }
 /* Scoped to .js so that without JavaScript every element stays fully visible. */
 .js .reveal { opacity: 0; transform: translateY(26px); transition: opacity .6s ease, transform .6s cubic-bezier(.2, .8, .3, 1); }
 .js .reveal.is-visible { opacity: 1; transform: none; }
+
+/* Collapse inline two-column page layouts to a single column on small screens.
+   The page views declare grid-template-columns inline (main + sidebar), which
+   cannot carry its own media query, so this overrides them below 860px. */
+@media (max-width: 860px) {
+  [style*="grid-template-columns"] { grid-template-columns: 1fr !important; }
+  .order-summary { position: static; top: auto; }
+}
 
 /* --------------------------------------------------------------------------
    17. Responsive
