@@ -60,7 +60,7 @@
 
 body.admin-body {
   margin: 0; font-family: var(--a-font); font-size: 15px; line-height: 1.65;
-  color: var(--a-text); background: var(--a-bg);
+  color: var(--a-text); background: var(--a-bg); overflow-x: hidden;
 }
 img, svg { max-width: 100%; display: block; }
 svg { fill: currentColor; }
@@ -149,6 +149,8 @@ p:last-child { margin-bottom: 0; }
 .a-card-head { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; margin-bottom: 16px; }
 .a-card-head h2 { margin: 0; }
 .a-grid { display: grid; gap: 18px; }
+.a-grid > * { min-width: 0; }
+.a-card { min-width: 0; }
 .a-grid-2 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
 .a-grid-3 { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
 .a-grid-4 { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
@@ -171,8 +173,8 @@ p:last-child { margin-bottom: 0; }
 .stat-sub { font-size: .74rem; color: var(--a-muted); margin-top: 4px; }
 
 /* ---------- Tables ---------- */
-.a-table-wrap { overflow-x: auto; border: 1px solid var(--a-border); border-radius: var(--a-r); background: var(--a-surface); }
-table.a-table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+.a-table-wrap { max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; border: 1px solid var(--a-border); border-radius: var(--a-r); background: var(--a-surface); }
+table.a-table { width: 100%; min-width: 720px; border-collapse: collapse; font-size: .88rem; }
 .a-table th, .a-table td { padding: 11px 14px; text-align: left; border-bottom: 1px solid var(--a-border); vertical-align: middle; }
 .a-table thead th { background: var(--a-surface-2); font-weight: 700; white-space: nowrap; font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; color: var(--a-soft); }
 .a-table tbody tr:hover { background: var(--a-surface-2); }
@@ -366,8 +368,11 @@ select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmln
   .menu-btn { display: grid; }
 }
 @media (max-width: 600px) {
-  .admin-main { padding: 16px 14px 32px; }
-  .admin-topbar { padding: 10px 14px; }
-  .a-card { padding: 16px; }
-  .topbar-title h1 { font-size: 1.05rem; }
+  .admin-main { padding: 16px 12px 32px; }
+  .admin-topbar { padding: 10px 12px; gap: 10px; }
+  .a-card { padding: 16px 14px; }
+  .topbar-title h1 { font-size: 1.02rem; }
+  .topbar-title p { display: none; }              /* subtitle is noise on phones */
+  .topbar-actions { gap: 7px; }
+  .topbar-actions .btn { padding: 8px 12px; font-size: .8rem; }
 }
