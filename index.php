@@ -91,6 +91,7 @@ $routes = [
     'facility-filling'      => 'calculator',
     'thank-you'             => 'thank-you',
     'search'                => 'search',
+    'sitemap'               => 'sitemap-html',
 ];
 
 $viewFile = null;

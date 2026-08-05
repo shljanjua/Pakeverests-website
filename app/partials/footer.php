@@ -169,7 +169,7 @@ $areas          = coverage_areas();
         <a href="<?= e(url('privacy-policy')) ?>">Privacy</a>
         <a href="<?= e(url('terms-and-conditions')) ?>">Terms</a>
         <a href="<?= e(url('refund-policy')) ?>">Refunds</a>
-        <a href="<?= e(url('sitemap.xml')) ?>">Sitemap</a>
+        <a href="<?= e(url('sitemap')) ?>">Sitemap</a>
       </p>
     </div>
   </div>

@@ -34,6 +34,7 @@ $add('faqs', '', 'monthly', '0.7');
 $add('reviews', '', 'weekly', '0.7');
 $add('careers', '', 'weekly', '0.6');
 $add('bulk-water-calculator', '', 'monthly', '0.7');
+$add('sitemap', '', 'weekly', '0.5');
 
 /* Products */
 foreach (fetch_all('SELECT slug, updated_at, created_at FROM products WHERE status = "published"') as $row) {
