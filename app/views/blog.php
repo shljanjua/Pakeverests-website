@@ -48,6 +48,12 @@ if ($slug !== '') {
         'keywords'         => $post['tags'],
         'wordCount'        => str_word_count(strip_tags((string) $post['content'])),
         'inLanguage'       => 'en-PK',
+        'isPartOf'         => ['@id' => SITE_URL . '/#website'],
+        'about'            => ['@id' => SITE_URL . '/#organization'],
+        'speakable'        => [
+            '@type'       => 'SpeakableSpecification',
+            'cssSelector' => ['h1', '.prose h2'],
+        ],
     ]);
 
     require PE_ROOT . '/app/partials/header.php';
