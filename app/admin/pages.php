@@ -46,6 +46,9 @@ if (is_post()) {
                 admin_log('Created page ' . $data['title'], 'pages', $id);
                 flash('success', 'Page created.');
             }
+            if ($data['status'] === 'published' && (int) $data['noindex'] === 0) {
+                notify_search_engines($data['slug']);
+            }
             redirect('admin/pages?edit=' . $id);
             break;
 

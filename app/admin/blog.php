@@ -46,6 +46,9 @@ if (is_post()) {
                 admin_log('Created blog post ' . $data['title'], 'blog_posts', $id);
                 flash('success', 'Post created.');
             }
+            if ($data['status'] === 'published') {
+                notify_search_engines('blog/' . $data['slug']);
+            }
             redirect('admin/blog?edit=' . $id);
             break;
 

@@ -253,3 +253,66 @@ function seo_title(): string
     }
     return $title . ' | ' . $brand;
 }
+
+/* ---------------------------------------------------------------------------
+ |  IndexNow — instantly notify search engines when a page is published or
+ |  updated, so new content is discovered without waiting for a crawl.
+ |  Supported by Bing, Yandex, Seznam, Naver and others from a single ping.
+ * ------------------------------------------------------------------------ */
+
+/** The IndexNow key: generated once, stored, and served as a text file at the root. */
+function indexnow_key(): string
+{
+    $key = trim((string) setting('indexnow_key', ''));
+    if (!preg_match('/^[a-f0-9]{16,}$/', $key)) {
+        $key = bin2hex(random_bytes(16)); // 32 hex characters
+        settings_save(['indexnow_key' => $key]);
+    }
+    return $key;
+}
+
+/**
+ * Submit absolute URLs to IndexNow. Best-effort and non-blocking: any failure
+ * here is swallowed so it can never affect saving content in the admin panel.
+ */
+function indexnow_submit(array $urls): void
+{
+    $urls = array_values(array_filter(array_unique($urls)));
+    if (!$urls || !function_exists('curl_init')) {
+        return;
+    }
+    // Only ping for a real public domain — never for localhost during development.
+    $host = parse_url(SITE_URL, PHP_URL_HOST) ?: '';
+    if ($host === '' || $host === 'localhost' || str_starts_with($host, '127.') || !str_contains($host, '.')) {
+        return;
+    }
+    $key = indexnow_key();
+    $payload = json_encode([
+        'host'        => $host,
+        'key'         => $key,
+        'keyLocation' => SITE_URL . '/' . $key . '.txt',
+        'urlList'     => array_slice($urls, 0, 100),
+    ], JSON_UNESCAPED_SLASHES);
+
+    try {
+        $ch = curl_init('https://api.indexnow.org/indexnow');
+        curl_setopt_array($ch, [
+            CURLOPT_POST           => true,
+            CURLOPT_POSTFIELDS     => $payload,
+            CURLOPT_HTTPHEADER     => ['Content-Type: application/json; charset=utf-8'],
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT        => 4,
+            CURLOPT_CONNECTTIMEOUT => 3,
+        ]);
+        curl_exec($ch);
+        curl_close($ch);
+    } catch (Throwable $e) {
+        // Notification is optional; never surface a failure to the user.
+    }
+}
+
+/** Notify search engines that a site-relative path was published or updated. */
+function notify_search_engines(string $path): void
+{
+    indexnow_submit([SITE_URL . '/' . ltrim($path, '/')]);
+}
