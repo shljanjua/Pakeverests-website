@@ -96,7 +96,7 @@ require PE_ROOT . '/app/partials/header.php';
 
       <div>
         <div class="product-media" style="border-radius:var(--r-lg);border:1px solid var(--border);aspect-ratio:1;">
-          <img src="<?= e(media_url($product['main_image'], 'product')) ?>" alt="<?= e($product['name']) ?>" width="600" height="600">
+          <img src="<?= e(media_url($product['main_image'], 'product')) ?>" alt="<?= e($product['name']) ?>" width="600" height="600" fetchpriority="high" decoding="async">
         </div>
         <?php if ($images): ?>
         <div class="gallery-grid" style="grid-template-columns:repeat(4,1fr);margin-top:14px;">

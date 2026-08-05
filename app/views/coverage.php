@@ -11,6 +11,35 @@ seo_set([
     'breadcrumbs' => ['Coverage Areas' => '/coverage-areas'],
 ]);
 
+/* Service schema with an explicit areaServed list — a strong local-SEO signal
+   that names every town and neighbourhood we deliver to, provided by the
+   licensed business entity. */
+$areaList = $areas ?: [
+    ['area_name' => 'Gujar Khan'], ['area_name' => 'Mandra'], ['area_name' => 'Daultala'],
+    ['area_name' => 'Bewal'], ['area_name' => 'Kallar Syedan'], ['area_name' => 'Rawat'],
+    ['area_name' => 'Adiala Road'], ['area_name' => 'Bahria Town Rawalpindi'],
+    ['area_name' => 'DHA Islamabad'], ['area_name' => 'Rawalpindi'], ['area_name' => 'Islamabad'],
+];
+seo_add_schema([
+    '@context'    => 'https://schema.org',
+    '@type'       => 'Service',
+    '@id'         => SITE_URL . '/coverage-areas#service',
+    'serviceType' => 'Bottled drinking water delivery',
+    'name'        => 'Free mineral water delivery',
+    'description' => 'Free home and office delivery of Pak-Everests mineral water across the Potohar belt, from Gujar Khan to Rawalpindi and Islamabad.',
+    'provider'    => ['@id' => SITE_URL . '/#organization'],
+    'areaServed'  => array_map(
+        fn($a) => ['@type' => 'City', 'name' => $a['area_name']],
+        $areaList
+    ),
+    'offers'      => [
+        '@type'         => 'Offer',
+        'price'         => '0',
+        'priceCurrency' => 'PKR',
+        'description'   => 'No delivery charge and no minimum order within the coverage area.',
+    ],
+]);
+
 require PE_ROOT . '/app/partials/header.php';
 $heroTitle = 'Where We Deliver';
 $heroSubtitle = 'Free delivery, no minimum order, across the whole Potohar belt from Gujar Khan to DHA Islamabad.';
