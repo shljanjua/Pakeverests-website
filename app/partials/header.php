@@ -89,7 +89,13 @@ $logoDark    = ($logoDarkRaw !== '' && is_file(PE_ROOT . '/' . ltrim($logoDarkRa
 
 <link rel="icon" href="<?= e(media_url((string) setting('favicon_path'), 'logo')) ?>">
 <link rel="apple-touch-icon" href="<?= e(media_url((string) setting('favicon_path'), 'logo')) ?>">
-<link rel="preconnect" href="https://fonts.googleapis.com">
+<?php /* Warm up connections only to third parties actually loaded on this page. */ ?>
+<?php if (setting('google_analytics_id') || setting('google_tag_manager_id') || setting('meta_pixel_id')): ?>
+<link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
+<?php endif; ?>
+<?php if (setting_bool('ads_enabled') && setting('adsense_publisher_id')): ?>
+<link rel="preconnect" href="https://pagead2.googlesyndication.com" crossorigin>
+<?php endif; ?>
 <link rel="stylesheet" href="<?= e(asset('css/style.css')) ?>">
 
 <script>

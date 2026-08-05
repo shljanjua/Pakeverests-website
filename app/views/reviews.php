@@ -38,6 +38,41 @@ seo_set([
     'breadcrumbs' => ['Reviews' => '/reviews'],
 ]);
 
+/* Review and aggregateRating structured data, tied to the business entity so
+   star ratings can surface in search. Built only from genuinely approved
+   reviews — never fabricated. */
+if ($total > 0) {
+    $reviewNodes = [];
+    foreach (array_slice($reviews, 0, 12) as $r) {
+        $node = [
+            '@type'         => 'Review',
+            'author'        => ['@type' => 'Person', 'name' => $r['reviewer_name']],
+            'datePublished' => date('Y-m-d', strtotime((string) $r['created_at'])),
+            'reviewRating'  => ['@type' => 'Rating', 'ratingValue' => (int) $r['rating'], 'bestRating' => 5, 'worstRating' => 1],
+            'reviewBody'    => strip_tags((string) $r['body']),
+        ];
+        if (!empty($r['title'])) {
+            $node['name'] = $r['title'];
+        }
+        $reviewNodes[] = $node;
+    }
+    seo_add_schema([
+        '@context'        => 'https://schema.org',
+        '@type'           => ['LocalBusiness', 'FoodEstablishment', 'Store'],
+        '@id'             => SITE_URL . '/#organization',
+        'name'            => site_name(),
+        'image'           => abs_url(setting('og_image', '/assets/img/og-default.jpg')),
+        'aggregateRating' => [
+            '@type'       => 'AggregateRating',
+            'ratingValue' => number_format($avg, 1),
+            'reviewCount' => (int) $total,
+            'bestRating'  => 5,
+            'worstRating' => 1,
+        ],
+        'review'          => $reviewNodes,
+    ]);
+}
+
 require PE_ROOT . '/app/partials/header.php';
 $heroTitle = 'Customer Reviews and Ratings';
 $heroSubtitle = 'Unedited feedback from customers across our delivery area. Every review is moderated for spam only, never for tone.';

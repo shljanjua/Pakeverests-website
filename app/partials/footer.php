@@ -40,7 +40,7 @@ $areas          = coverage_areas();
 
     <div class="footer-col footer-about">
       <a class="footer-brand" href="<?= e(url('/')) ?>">
-        <img src="<?= e(media_url((string) setting('logo_path'), 'logo')) ?>" alt="<?= e(site_name()) ?> logo" width="190" height="58">
+        <img src="<?= e(media_url((string) setting('logo_path'), 'logo')) ?>" alt="<?= e(site_name()) ?> logo" width="190" height="58" loading="lazy" decoding="async">
       </a>
       <p class="footer-text"><?= e((string) setting('footer_about')) ?></p>
 
