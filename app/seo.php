@@ -316,3 +316,41 @@ function notify_search_engines(string $path): void
 {
     indexnow_submit([SITE_URL . '/' . ltrim($path, '/')]);
 }
+
+/**
+ * Every public, indexable URL on the site (the same set the XML sitemap
+ * publishes: static routes, products, blog posts and indexable CMS pages),
+ * as absolute URLs.
+ */
+function all_indexable_urls(): array
+{
+    $paths = [
+        '', 'products', 'order', 'purification-process', 'minerals-and-benefits',
+        'about', 'contact', 'coverage-areas', 'distribution', 'distributor-application',
+        'custom-label-bottles', 'custom-label-request', 'gallery', 'documents', 'blog',
+        'faqs', 'reviews', 'careers', 'bulk-water-calculator', 'sitemap',
+    ];
+    foreach (fetch_all('SELECT slug FROM products WHERE status = "published"') as $r) {
+        $paths[] = 'product/' . $r['slug'];
+    }
+    foreach (fetch_all('SELECT slug FROM blog_posts WHERE status = "published"') as $r) {
+        $paths[] = 'blog/' . $r['slug'];
+    }
+    foreach (fetch_all('SELECT slug FROM pages WHERE status = "published" AND noindex = 0') as $r) {
+        $paths[] = $r['slug'];
+    }
+    return array_values(array_unique(array_map(
+        fn($p) => SITE_URL . '/' . ltrim($p, '/'),
+        $paths
+    )));
+}
+
+/** Submit every indexable URL to IndexNow at once. Returns the number sent. */
+function indexnow_submit_all(): int
+{
+    $urls = all_indexable_urls();
+    foreach (array_chunk($urls, 100) as $chunk) {
+        indexnow_submit($chunk);
+    }
+    return count($urls);
+}
