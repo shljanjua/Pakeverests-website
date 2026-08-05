@@ -81,6 +81,9 @@ if (is_post()) {
                     }
                 }
             }
+            if ($data['status'] === 'published') {
+                notify_search_engines('product/' . $data['slug']);
+            }
             redirect('admin/products?edit=' . $id);
             break;
 

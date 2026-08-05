@@ -69,6 +69,13 @@ if (is_post()) {
             redirect('admin/settings?tab=seo');
             break;
 
+        case 'indexnow_ping_all':
+            $sent = indexnow_submit_all();
+            admin_log('Submitted all URLs to IndexNow (' . $sent . ')');
+            flash('success', 'Submitted ' . $sent . ' pages to IndexNow (Bing, Yandex and others). Google does not accept instant pings — use URL Inspection in Search Console for Google.');
+            redirect('admin/settings?tab=seo');
+            break;
+
         case 'save_maps':
             settings_save([
                 'map_lat' => post('map_lat'), 'map_lng' => post('map_lng'), 'map_zoom' => post('map_zoom'),
@@ -381,6 +388,24 @@ admin_header('Settings', 'Everything that configures the website');
     <textarea id="custom_body_code" name="custom_body_code" class="code" style="min-height:130px;"><?= e((string) setting('custom_body_code')) ?></textarea>
   </div>
   <button class="btn btn-primary" type="submit">Save SEO settings</button>
+</form>
+
+<form method="post" class="a-card">
+  <?= csrf_field() ?>
+  <input type="hidden" name="action" value="indexnow_ping_all">
+  <div class="a-card-head"><h2>Submit all pages to search engines</h2></div>
+  <p class="form-hint" style="margin-bottom:12px;">
+    Instantly notifies <strong>Bing, Yandex</strong> and other IndexNow search engines about every published page
+    (<?= (int) count(all_indexable_urls()) ?> URLs). New and updated pages are submitted automatically on save — use
+    this to push the whole site at once, for example after a big content update.
+  </p>
+  <div class="alert alert-info" style="margin-bottom:14px;">
+    <strong>For Google:</strong> Google does not accept instant pings. Open
+    <a href="https://search.google.com/search-console" target="_blank" rel="noopener">Search Console</a>,
+    use <em>URL Inspection → Request Indexing</em> for your key pages (about 10–12 per day), and make sure
+    <a href="<?= e(url('sitemap.xml')) ?>" target="_blank" rel="noopener">/sitemap.xml</a> is submitted.
+  </div>
+  <button class="btn btn-primary" type="submit">Submit all pages to IndexNow now</button>
 </form>
 
 <?php elseif ($tab === 'maps'): ?>

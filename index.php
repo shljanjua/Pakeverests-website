@@ -64,6 +64,13 @@ switch ($route) {
         exit;
 }
 
+/* IndexNow key verification file, served at /{key}.txt */
+if (preg_match('/^[a-f0-9]{16,}\.txt$/', $route) && $route === indexnow_key() . '.txt') {
+    header('Content-Type: text/plain; charset=utf-8');
+    echo indexnow_key();
+    exit;
+}
+
 /* ---------------------------------------------------------------------------
  |  Route table  ->  view file in app/views/
  * ------------------------------------------------------------------------ */
