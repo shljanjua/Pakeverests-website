@@ -198,7 +198,7 @@ hr { border: 0; border-top: 1px solid var(--border); margin: 2rem 0; }
 .btn-whatsapp { background: #25d366; color: #08331b; box-shadow: 0 6px 18px rgba(37, 211, 102, .34); }
 .btn-whatsapp:hover { color: #08331b; background: #1fbe5b; }
 
-.btn-outline { background: transparent; color: var(--brand); border-color: var(--border-strong); }
+.btn-outline { background: transparent; color: var(--brand-ink); border-color: var(--border-strong); }
 .btn-outline:hover { color: var(--on-brand); background: var(--brand); border-color: var(--brand); }
 
 .btn-ghost { background: var(--surface-2); color: var(--text); }
@@ -329,7 +329,7 @@ hr { border: 0; border-top: 1px solid var(--border); margin: 2rem 0; }
    -------------------------------------------------------------------------- */
 .news-ticker {
   display: flex; align-items: stretch; overflow: hidden; max-width: 100%;
-  background: var(--ticker-bg, var(--aqua-700));
+  background: var(--ticker-bg, var(--aqua-800));
   color: var(--ticker-color, #fff);
   font-family: var(--ticker-family, inherit);
   font-size: var(--ticker-size, 14px);
@@ -354,7 +354,9 @@ hr { border: 0; border-top: 1px solid var(--border); margin: 2rem 0; }
 .ticker-item { display: inline-flex; align-items: center; gap: 10px; padding-inline: 22px; }
 .ticker-item a { color: inherit; }
 .ticker-item a:hover { color: var(--ticker-highlight, #7fe3ff); }
-.ticker-item.is-highlight { color: var(--ticker-highlight, #7fe3ff); }
+/* Highlighted items are distinguished by weight and underline as well as
+   colour, so they never rely on colour contrast alone (WCAG 1.4.1). */
+.ticker-item.is-highlight { color: var(--ticker-highlight, #9fecff); font-weight: 800; text-decoration: underline; text-underline-offset: 3px; }
 .ticker-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; opacity: .6; flex: none; }
 @keyframes ticker-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
@@ -464,7 +466,7 @@ hr { border: 0; border-top: 1px solid var(--border); margin: 2rem 0; }
 .eyebrow {
   display: inline-flex; align-items: center; gap: 8px; margin-bottom: 14px;
   padding: 6px 15px; border-radius: var(--r-pill);
-  background: var(--brand-soft); color: var(--brand);
+  background: var(--brand-soft); color: var(--brand-ink);
   font-size: .76rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase;
 }
 .section-dark .eyebrow { background: rgba(255, 255, 255, .14); color: #8ef0c9; }

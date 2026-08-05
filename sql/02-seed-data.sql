@@ -91,9 +91,9 @@ INSERT INTO `settings` (`setting_key`,`setting_value`,`setting_group`,`updated_a
 ('ticker_font_size','14','ticker',NOW()),
 ('ticker_font_weight','600','ticker',NOW()),
 ('ticker_font_family','inherit','ticker',NOW()),
-('ticker_bg','#0b6fa4','ticker',NOW()),
+('ticker_bg','#0f5376','ticker',NOW()),
 ('ticker_color','#ffffff','ticker',NOW()),
-('ticker_highlight_color','#7fe3ff','ticker',NOW()),
+('ticker_highlight_color','#9fecff','ticker',NOW()),
 ('ticker_pause_on_hover','1','ticker',NOW()),
 
 -- Payments -----------------------------------------------------------------
