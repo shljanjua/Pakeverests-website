@@ -223,7 +223,7 @@ fbq('init', <?= ejs($pixel) ?>); fbq('track', 'PageView');
         <?php foreach ($tickerItems as $item): ?>
         <span class="ticker-item<?= (int) $item['highlight'] === 1 ? ' is-highlight' : '' ?>"<?= $pass === 1 ? ' aria-hidden="true"' : '' ?>>
           <span class="ticker-dot" aria-hidden="true"></span>
-          <?php if (!empty($item['link'])): ?>
+          <?php if (!empty($item['link']) && $pass === 0): /* Only the visible pass gets a real link; the aria-hidden duplicate is plain text so it has no focusable descendants. */ ?>
             <a href="<?= e($item['link']) ?>"><?= e($item['text']) ?></a>
           <?php else: ?>
             <?= e($item['text']) ?>

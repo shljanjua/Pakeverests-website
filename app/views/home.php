@@ -101,8 +101,9 @@ require PE_ROOT . '/app/partials/header.php';
 </section>
 
 <!-- =================== TRUST =================== -->
-<section class="section">
+<section class="section" aria-labelledby="why-choose">
   <div class="container">
+    <h2 id="why-choose" class="sr-only">Why choose Pak-Everests</h2>
     <div class="grid grid-4">
       <?php
       $trust = [
