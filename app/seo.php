@@ -61,6 +61,35 @@ function abs_url(string $path): string
     return SITE_URL . '/' . ltrim($path, '/');
 }
 
+/**
+ * A guaranteed raster (non-SVG) absolute image URL for structured data.
+ * Google Merchant listings / Product rich results reject SVG images, and the
+ * site's default placeholders are SVG, so fall back to a real raster image
+ * (the configured OG image, else the bundled JPG) whenever the given path is
+ * missing, not a real file, or an SVG.
+ */
+function schema_image_url(?string $path): string
+{
+    $candidates = [
+        trim((string) $path),
+        trim((string) setting('og_image', '')),
+        '/assets/img/og-default.jpg',
+    ];
+    foreach ($candidates as $c) {
+        if ($c === '' || preg_match('#\.svg(\?|$)#i', $c)) {
+            continue;
+        }
+        if (preg_match('#^https?://#i', $c)) {
+            return $c;
+        }
+        $rel = '/' . ltrim($c, '/');
+        if (is_file(PE_ROOT . $rel)) {
+            return abs_url($rel);
+        }
+    }
+    return abs_url('/assets/img/og-default.jpg');
+}
+
 /* ---------------------------------------------------------------------------
  |  Organisation / LocalBusiness — the base entity for the whole site
  * ------------------------------------------------------------------------ */
