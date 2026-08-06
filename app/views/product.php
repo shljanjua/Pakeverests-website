@@ -39,20 +39,32 @@ $offer = [
     'itemCondition' => 'https://schema.org/NewCondition',
     'seller'        => ['@id' => SITE_URL . '/#organization'],
     'priceValidUntil' => date('Y-12-31'),
-];
-if ((int) $product['free_delivery'] === 1) {
-    $offer['shippingDetails'] = [
+    // Free delivery across the coverage area — always declared so Merchant
+    // listings has the shipping information it expects.
+    'shippingDetails' => [
         '@type' => 'OfferShippingDetails',
         'shippingRate' => ['@type' => 'MonetaryAmount', 'value' => 0, 'currency' => 'PKR'],
         'shippingDestination' => ['@type' => 'DefinedRegion', 'addressCountry' => 'PK'],
-    ];
-}
+        'deliveryTime' => [
+            '@type' => 'ShippingDeliveryTime',
+            'handlingTime' => ['@type' => 'QuantitativeValue', 'minValue' => 0, 'maxValue' => 1, 'unitCode' => 'DAY'],
+            'transitTime'  => ['@type' => 'QuantitativeValue', 'minValue' => 0, 'maxValue' => 1, 'unitCode' => 'DAY'],
+        ],
+    ],
+    // Bottled drinking water is a consumable, so purchase returns are not
+    // offered (the 19L bottle deposit is refunded separately on bottle return).
+    'hasMerchantReturnPolicy' => [
+        '@type' => 'MerchantReturnPolicy',
+        'applicableCountry' => 'PK',
+        'returnPolicyCategory' => 'https://schema.org/MerchantReturnNotPermitted',
+    ],
+];
 
 $productSchema = [
     '@context'    => 'https://schema.org',
     '@type'       => 'Product',
     'name'        => $product['name'],
-    'image'       => [abs_url(media_url($product['main_image'], 'product'))],
+    'image'       => [schema_image_url($product['main_image'])],
     'description' => excerpt($product['short_description'], 300),
     'sku'         => $product['sku'],
     'brand'       => ['@type' => 'Brand', 'name' => 'Pak-Everests'],

@@ -22,7 +22,9 @@ seo_add_schema([
             '@type'       => 'Product',
             'name'        => $p['name'],
             'url'         => SITE_URL . '/product/' . $p['slug'],
+            'image'       => schema_image_url($p['main_image']),
             'description' => excerpt($p['short_description'], 180),
+            'brand'       => ['@type' => 'Brand', 'name' => 'Pak-Everests'],
             'offers'      => [
                 '@type'         => 'Offer',
                 'price'         => (float) $p['price'],

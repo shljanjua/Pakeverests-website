@@ -71,6 +71,18 @@ if (preg_match('/^[a-f0-9]{16,}\.txt$/', $route) && $route === indexnow_key() . 
     exit;
 }
 
+/* Legacy / short-form URL redirects to the canonical page (301). */
+$aliasRedirects = [
+    'coverage'      => 'coverage-areas',
+    'coverage-area' => 'coverage-areas',
+    'distributor'   => 'distribution',
+    'faq'           => 'faqs',
+    'review'        => 'reviews',
+];
+if ($param === '' && isset($aliasRedirects[$route])) {
+    redirect($aliasRedirects[$route], 301);
+}
+
 /* ---------------------------------------------------------------------------
  |  Route table  ->  view file in app/views/
  * ------------------------------------------------------------------------ */
