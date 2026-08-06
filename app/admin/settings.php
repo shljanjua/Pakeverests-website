@@ -394,10 +394,21 @@ admin_header('Settings', 'Everything that configures the website');
   <?= csrf_field() ?>
   <input type="hidden" name="action" value="indexnow_ping_all">
   <div class="a-card-head"><h2>Submit all pages to search engines</h2></div>
+  <?php $inKey = indexnow_key(); $inKeyUrl = SITE_URL . '/' . $inKey . '.txt'; ?>
+  <div class="alert alert-success" style="margin-bottom:14px;">
+    <strong>✓ IndexNow is active.</strong> New and updated pages are submitted to search engines automatically.
+  </div>
+  <div class="form-group">
+    <label for="indexnow_key_display">Your IndexNow key</label>
+    <input type="text" id="indexnow_key_display" value="<?= e($inKey) ?>" readonly onclick="this.select();" style="font-family:monospace;">
+    <span class="form-hint">
+      Generated automatically and stored for this site. Confirm it is live by opening the key file — it must show exactly this key:
+      <a href="<?= e($inKeyUrl) ?>" target="_blank" rel="noopener"><?= e($inKeyUrl) ?></a>
+    </span>
+  </div>
   <p class="form-hint" style="margin-bottom:12px;">
-    Instantly notifies <strong>Bing, Yandex</strong> and other IndexNow search engines about every published page
-    (<?= (int) count(all_indexable_urls()) ?> URLs). New and updated pages are submitted automatically on save — use
-    this to push the whole site at once, for example after a big content update.
+    The button below instantly notifies <strong>Bing, Yandex</strong> and other IndexNow search engines about every published page
+    (<?= (int) count(all_indexable_urls()) ?> URLs) — use it to push the whole site at once, for example after a big content update.
   </p>
   <div class="alert alert-info" style="margin-bottom:14px;">
     <strong>For Google:</strong> Google does not accept instant pings. Open
