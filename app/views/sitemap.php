@@ -46,8 +46,11 @@ foreach (fetch_all('SELECT slug, updated_at, published_at, created_at FROM blog_
     $add('blog/' . $row['slug'], (string) ($row['updated_at'] ?: $row['published_at'] ?: $row['created_at']), 'monthly', '0.7');
 }
 
-/* CMS pages */
+/* CMS pages — excluding thin boilerplate pages we deliberately keep out of the index */
 foreach (fetch_all('SELECT slug, updated_at, created_at FROM pages WHERE status = "published" AND noindex = 0') as $row) {
+    if (in_array($row['slug'], default_noindex_slugs(), true)) {
+        continue;
+    }
     $add($row['slug'], (string) ($row['updated_at'] ?: $row['created_at']), 'yearly', '0.4');
 }
 

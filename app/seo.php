@@ -347,6 +347,24 @@ function notify_search_engines(string $path): void
 }
 
 /**
+ * Thin, boilerplate CMS pages that are deliberately kept out of the index
+ * (noindex, follow) so a new domain's limited crawl budget concentrates on the
+ * pages that can actually rank. They stay live and crawlable; only search
+ * indexing is suppressed. Privacy, Terms, Refund and the quality policy are
+ * intentionally NOT here — those are worth indexing.
+ */
+function default_noindex_slugs(): array
+{
+    return ['delivery-policy', 'damage-policy', 'dispute-resolution', 'distributor-terms', 'cookie-policy', 'disclaimer'];
+}
+
+/** Whether a CMS page should be indexed, honouring both its DB flag and the default list. */
+function page_is_indexable(string $slug, int $dbNoindex): bool
+{
+    return $dbNoindex !== 1 && !in_array($slug, default_noindex_slugs(), true);
+}
+
+/**
  * Every public, indexable URL on the site (the same set the XML sitemap
  * publishes: static routes, products, blog posts and indexable CMS pages),
  * as absolute URLs.
@@ -366,7 +384,9 @@ function all_indexable_urls(): array
         $paths[] = 'blog/' . $r['slug'];
     }
     foreach (fetch_all('SELECT slug FROM pages WHERE status = "published" AND noindex = 0') as $r) {
-        $paths[] = $r['slug'];
+        if (!in_array($r['slug'], default_noindex_slugs(), true)) {
+            $paths[] = $r['slug'];
+        }
     }
     return array_values(array_unique(array_map(
         fn($p) => SITE_URL . '/' . ltrim($p, '/'),

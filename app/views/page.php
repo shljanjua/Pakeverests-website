@@ -13,7 +13,7 @@ seo_set([
     'title'       => (string) ($cms['meta_title'] ?: $cms['title']),
     'description' => (string) ($cms['meta_description'] ?: excerpt($cms['content'], 165)),
     'keywords'    => (string) $cms['meta_keywords'],
-    'robots'      => (int) $cms['noindex'] === 1 ? 'noindex, follow' : 'index, follow, max-image-preview:large, max-snippet:-1',
+    'robots'      => page_is_indexable((string) $cms['slug'], (int) $cms['noindex']) ? 'index, follow, max-image-preview:large, max-snippet:-1' : 'noindex, follow',
     'modified_at' => $cms['updated_at'],
     'breadcrumbs' => [$cms['title'] => '/' . $cms['slug']],
 ]);

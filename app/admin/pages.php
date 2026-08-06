@@ -46,7 +46,7 @@ if (is_post()) {
                 admin_log('Created page ' . $data['title'], 'pages', $id);
                 flash('success', 'Page created.');
             }
-            if ($data['status'] === 'published' && (int) $data['noindex'] === 0) {
+            if ($data['status'] === 'published' && page_is_indexable($data['slug'], (int) $data['noindex'])) {
                 notify_search_engines($data['slug']);
             }
             redirect('admin/pages?edit=' . $id);
@@ -206,7 +206,7 @@ admin_header('Pages and Legal', 'Edit every policy page and create new pages', [
         <tr>
           <td><strong><?= e($pg['title']) ?></strong>
             <?php if ((int) $pg['is_system'] === 1): ?><span class="pill pill-muted">System</span><?php endif; ?>
-            <?php if ((int) $pg['noindex'] === 1): ?><span class="pill pill-warn">noindex</span><?php endif; ?>
+            <?php if (!page_is_indexable((string) $pg['slug'], (int) $pg['noindex'])): ?><span class="pill pill-warn">noindex</span><?php endif; ?>
           </td>
           <td><small class="media-path">/<?= e($pg['slug']) ?></small></td>
           <td><small><?= e(ucfirst($pg['nav_group'])) ?></small></td>
