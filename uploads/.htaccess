@@ -1,0 +1,24 @@
+# Uploaded files are data, never code.
+<IfModule mod_php.c>
+    php_flag engine off
+</IfModule>
+<IfModule mod_php7.c>
+    php_flag engine off
+</IfModule>
+<IfModule mod_php8.c>
+    php_flag engine off
+</IfModule>
+
+# Belt and braces for servers where the directives above are not available.
+<FilesMatch "\.(php|php3|php4|php5|php7|php8|phtml|pl|py|cgi|asp|aspx|sh|shtml)$">
+    Require all denied
+</FilesMatch>
+
+# Explicitly allow uploaded media to be served. Some hardened hosts default to
+# "Require all denied", which makes legitimate images return 403 Forbidden.
+<FilesMatch "\.(jpe?g|png|gif|webp|avif|svg|ico|bmp|pdf|webm|mp4|woff2?)$">
+    Require all granted
+</FilesMatch>
+
+Options -Indexes -ExecCGI
+AddType text/plain .php .phtml .php3 .php4 .php5 .php7 .php8
