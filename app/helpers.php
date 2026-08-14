@@ -63,7 +63,29 @@ function asset(string $path): string
 {
     $rel  = '/assets/' . ltrim($path, '/');
     $file = PE_ROOT . $rel;
-    $ver  = is_file($file) ? substr((string) filemtime($file), -6) : '1';
+
+    /* Serve a minified, cached copy of stylesheets to trim the payload. The
+       minify is deliberately conservative — it only strips comments and leading
+       indentation, never touching declaration values — so it cannot break
+       calc(), content strings or anything else. It regenerates automatically
+       when the source changes and falls back to the original stylesheet if the
+       directory is not writable. */
+    if (substr($path, -4) === '.css' && is_file($file)) {
+        $minRel = substr($rel, 0, -4) . '.min.css';
+        $min    = PE_ROOT . $minRel;
+        if (!is_file($min) || filemtime($min) < filemtime($file)) {
+            $css = (string) file_get_contents($file);
+            $css = preg_replace('#/\*.*?\*/#s', '', $css);   // comments
+            $css = preg_replace('#^[ \t]+#m', '', $css);     // leading indentation
+            $css = preg_replace('#\n{2,}#', "\n", (string) $css); // blank lines
+            @file_put_contents($min, trim((string) $css));
+        }
+        if (is_file($min) && filemtime($min) >= filemtime($file)) {
+            return $minRel . '?v=' . substr((string) filemtime($min), -6);
+        }
+    }
+
+    $ver = is_file($file) ? substr((string) filemtime($file), -6) : '1';
     return $rel . '?v=' . $ver;
 }
 
@@ -80,7 +102,10 @@ function media_url(?string $path, string $fallback = 'placeholder'): string
             return $path;
         }
         $rel = '/' . ltrim($path, '/');
-        if (is_file(PE_ROOT . $rel)) {
+        // Only reference the file if it exists AND is readable — a present but
+        // unreadable file would otherwise be served to the browser as a broken
+        // 403 resource. Falling back to the placeholder avoids that console error.
+        if (is_file(PE_ROOT . $rel) && is_readable(PE_ROOT . $rel)) {
             return $rel;
         }
     }
