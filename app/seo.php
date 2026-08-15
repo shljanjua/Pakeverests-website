@@ -301,6 +301,26 @@ function indexnow_key(): string
 }
 
 /**
+ * Secret key that authenticates the automated content-publishing endpoint
+ * (POST /api/publish-blog). Generated once and stored; shown in the admin so
+ * the owner can copy it into the scheduled automation. An env override lets a
+ * host rotate it without touching the database.
+ */
+function content_api_key(): string
+{
+    $env = getenv('CONTENT_API_KEY');
+    if (is_string($env) && preg_match('/^[a-f0-9]{24,}$/', $env)) {
+        return $env;
+    }
+    $key = trim((string) setting('content_api_key', ''));
+    if (!preg_match('/^[a-f0-9]{24,}$/', $key)) {
+        $key = bin2hex(random_bytes(20)); // 40 hex characters
+        settings_save(['content_api_key' => $key]);
+    }
+    return $key;
+}
+
+/**
  * Submit absolute URLs to IndexNow. Best-effort and non-blocking: any failure
  * here is swallowed so it can never affect saving content in the admin panel.
  */

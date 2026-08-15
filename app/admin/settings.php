@@ -419,6 +419,21 @@ admin_header('Settings', 'Everything that configures the website');
   <button class="btn btn-primary" type="submit">Submit all pages to IndexNow now</button>
 </form>
 
+<div class="a-card">
+  <div class="a-card-head"><h2>Automated content publishing</h2></div>
+  <?php $caKey = content_api_key(); ?>
+  <p class="form-hint" style="margin-bottom:12px;">
+    The scheduled blog automation posts new articles here as <strong>drafts</strong> for your approval — they never go
+    live until you publish them from <a href="<?= e(admin_url('blog')) ?>">Blog</a>. Keep this key secret; anyone with it
+    can create draft posts.
+  </p>
+  <div class="form-group">
+    <label for="content_api_key_display">Content publishing key</label>
+    <input type="text" id="content_api_key_display" value="<?= e($caKey) ?>" readonly onclick="this.select();" style="font-family:monospace;">
+    <p class="form-hint">Endpoint: <code>POST <?= e(SITE_URL) ?>/api/publish-blog</code> with header <code>X-Content-Key</code>.</p>
+  </div>
+</div>
+
 <?php elseif ($tab === 'maps'): ?>
 <form method="post" class="a-card">
   <?= csrf_field() ?>
