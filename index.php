@@ -71,6 +71,74 @@ if (preg_match('/^[a-f0-9]{16,}\.txt$/', $route) && $route === indexnow_key() . 
     exit;
 }
 
+/* ---------------------------------------------------------------------------
+ |  Automated content API — create a blog post as a DRAFT for owner approval.
+ |  POST /api/publish-blog with header  X-Content-Key: <content_api_key()>
+ |  and a JSON body { title, content, excerpt, category, tags, meta_* }.
+ * ------------------------------------------------------------------------ */
+if ($route === 'api' && $param === 'publish-blog') {
+    header('Content-Type: application/json; charset=utf-8');
+    $fail = function (int $code, string $msg) {
+        http_response_code($code);
+        echo json_encode(['ok' => false, 'error' => $msg]);
+        exit;
+    };
+    if (!is_post()) {
+        $fail(405, 'POST required');
+    }
+    $given = (string) ($_SERVER['HTTP_X_CONTENT_KEY'] ?? '');
+    if ($given === '' || !hash_equals(content_api_key(), $given)) {
+        $fail(401, 'Unauthorized');
+    }
+    if (rate_limited('content_api', 12, 3600)) {
+        $fail(429, 'Rate limit exceeded');
+    }
+    $in = json_decode((string) file_get_contents('php://input'), true);
+    if (!is_array($in)) {
+        $fail(400, 'Invalid JSON body');
+    }
+    $title   = trim((string) ($in['title'] ?? ''));
+    $content = trim((string) ($in['content'] ?? ''));
+    if ($title === '' || mb_strlen($title) > 190) {
+        $fail(422, 'A title (max 190 chars) is required');
+    }
+    if (str_word_count(strip_tags($content)) < 300) {
+        $fail(422, 'Content must be a substantial article (300+ words)');
+    }
+    $slug = slugify((string) ($in['slug'] ?? $title));
+    if (fetch_val('SELECT id FROM blog_posts WHERE slug = ?', [$slug])) {
+        $slug .= '-' . substr((string) time(), -4);
+    }
+    $now  = date('Y-m-d H:i:s');
+    $data = [
+        'slug'             => $slug,
+        'title'            => $title,
+        'excerpt'          => trim((string) ($in['excerpt'] ?? '')),
+        'content'          => $content,
+        'category'         => trim((string) ($in['category'] ?? '')) ?: 'Water & Health',
+        'tags'             => trim((string) ($in['tags'] ?? '')),
+        'author'           => trim((string) ($in['author'] ?? '')) ?: 'Pak-Everests Team',
+        'reading_minutes'  => max(1, (int) ceil(str_word_count(strip_tags($content)) / 200)),
+        'meta_title'       => trim((string) ($in['meta_title'] ?? '')),
+        'meta_description' => trim((string) ($in['meta_description'] ?? '')),
+        'meta_keywords'    => trim((string) ($in['meta_keywords'] ?? '')),
+        'is_featured'      => 0,
+        'status'           => 'draft',   // always a draft — the owner approves before it goes live
+        'published_at'     => $now,
+        'created_at'       => $now,
+        'updated_at'       => $now,
+    ];
+    $id = db_insert('blog_posts', $data);
+    echo json_encode([
+        'ok'       => true,
+        'id'       => (int) $id,
+        'status'   => 'draft',
+        'slug'     => $slug,
+        'edit_url' => SITE_URL . '/admin/blog?edit=' . (int) $id,
+    ]);
+    exit;
+}
+
 /* Legacy / short-form URL redirects to the canonical page (301). */
 $aliasRedirects = [
     'coverage'      => 'coverage-areas',
